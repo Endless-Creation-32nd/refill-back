@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class LoginService {
   private final JwtProperty property;
   private final PasswordEncoder passwordEncoder;
 
+  @Transactional
   public Token login(LoginRequest loginRequest, HttpServletResponse response){
     Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
         .orElseThrow(() -> new NotFoundResourceException(loginRequest.getEmail() + "User 을 찾을 수 없습니다."));
@@ -35,6 +37,8 @@ public class LoginService {
     String accessToken = jwtProvider.accessToken(TokenInfo.accessTokenInfo(findMember.getId(), property.getAccessExpiredMin()));
     String refreshToken = jwtProvider.refreshToken(TokenInfo.refreshTokenInfo(property.getRefreshExpiredDay()));
 
+    findMember.setRefreshToken(refreshToken);
+    System.out.println(findMember.getRefreshToken());
     response.addCookie(CookieFactory.generateRefreshCooke(refreshToken,property.getRefreshExpiredDay()));
 
     return new Token(accessToken);

@@ -34,6 +34,9 @@ public class Member extends BaseTimeEntity {
   @Column(nullable = false, columnDefinition = "varchar(100)")
   private String password;
 
+  @Column(name = "refresh_token")
+  private String refreshToken;
+
   @OneToMany(mappedBy = "member")
   private Set<MemberHashTag> memberHashTags = new HashSet<>();
 
@@ -48,4 +51,7 @@ public class Member extends BaseTimeEntity {
     memberHashTags.add(memberHashTag);
   }
 
+  public void setRefreshToken(String token){
+    this.refreshToken = token;
+  }
 }
