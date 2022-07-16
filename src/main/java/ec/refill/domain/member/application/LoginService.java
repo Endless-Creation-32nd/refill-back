@@ -38,7 +38,6 @@ public class LoginService {
     String refreshToken = jwtProvider.refreshToken(TokenInfo.refreshTokenInfo(property.getRefreshExpiredDay()));
 
     findMember.setRefreshToken(refreshToken);
-    System.out.println(findMember.getRefreshToken());
     response.addCookie(CookieFactory.generateRefreshCooke(refreshToken,property.getRefreshExpiredDay()));
 
     return new Token(accessToken);
