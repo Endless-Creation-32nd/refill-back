@@ -25,10 +25,10 @@ public class Member extends BaseTimeEntity {
   @Column(name = "member_id")
   private Long id;
 
-  @Column(nullable = false, columnDefinition = "varchar(50)")
+  @Column(nullable = false, unique = true , columnDefinition = "varchar(50)")
   private String email;
 
-  @Column(name = "nickname", nullable = false, columnDefinition = "varchar(8)")
+  @Column(name = "nickname", unique = true, nullable = false, columnDefinition = "varchar(8)")
   private String nickname;
 
   @Column(nullable = false, columnDefinition = "varchar(100)")
