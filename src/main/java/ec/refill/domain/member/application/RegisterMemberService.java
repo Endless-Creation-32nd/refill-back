@@ -43,4 +43,4 @@ public class RegisterMemberService {
       memberHashTagRepository.save(new MemberHashTag(member, hashTag));
     }
   }
-} 
+}
