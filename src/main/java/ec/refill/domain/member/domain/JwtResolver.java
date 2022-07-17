@@ -65,7 +65,7 @@ public class JwtResolver {
 
   public String getMemberIdByJwt(String token){
     try{
-      Claims claims = Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token)
+      Claims claims = Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token)
           .getBody();
       return claims.get("memberId").toString();
     }catch (ExpiredJwtException e ){
