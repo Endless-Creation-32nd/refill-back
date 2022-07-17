@@ -4,12 +4,14 @@ import ec.refill.common.config.web.AuthUser;
 import ec.refill.common.config.web.LoginUser;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.member.application.LoginService;
+import ec.refill.domain.member.application.LogoutService;
 import ec.refill.domain.member.application.RefreshAuthService;
 import ec.refill.domain.member.domain.Token;
 import ec.refill.domain.member.dto.AuthCheckResponse;
 import ec.refill.domain.member.dto.LoginRequest;
 import ec.refill.domain.member.dto.RefreshAuthRequest;
 import ec.refill.domain.member.exception.NotLoginMemberException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class AuthApi {
 
   private final LoginService loginService;
   private final RefreshAuthService refreshAuthService;
+  private final LogoutService logoutService;
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request,
@@ -51,5 +54,15 @@ public class AuthApi {
     }
     Token token = refreshAuthService.refresh(refreshAuthRequest, refreshToken);
     return JsonResponse.okWithData(HttpStatus.OK, "재인증 성공", token);
+  }
+
+  @GetMapping("/logout")
+  public ResponseEntity<?> logout(@LoginUser AuthUser user,  @CookieValue(name = "refresh", required = false) String refreshToken,
+    HttpServletResponse response
+  ) {
+    if(refreshToken == null ) throw new NotLoginMemberException();
+    logoutService.logout(user.getId(), refreshToken, response);
+
+    return JsonResponse.ok(HttpStatus.OK,"로그아웃 성공");
   }
 }

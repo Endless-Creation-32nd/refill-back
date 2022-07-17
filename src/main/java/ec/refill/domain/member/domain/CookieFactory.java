@@ -13,4 +13,12 @@ public class CookieFactory {
     cookie.setMaxAge(refreshExpiredDay * 3600 * 24);
     return cookie;
   }
+
+  public static Cookie removeCookie(){
+    Cookie cookie = new Cookie("refresh", null);
+    cookie.setHttpOnly(true);
+    cookie.setPath("/");
+    cookie.setMaxAge(0);
+    return cookie;
+  }
 }
