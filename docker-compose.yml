@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  refill-mysql:
+    image: mysql:8
+    container_name: refill-mysql
+    ports:
+      - 13308:3306
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      - TZ=Asia/Seoul
+    env_file:
+      - .env
+    volumes:
+      - ./db/mysql:/var/lib/mysql
+  refill-api:
+    container_name: refill-auth
+    build: .
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+    depends_on:
+      - refill-mysql
