@@ -27,19 +27,19 @@ public class LoginService {
 
   @Transactional
   public Token login(LoginRequest loginRequest, HttpServletResponse response){
-    Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
-        .orElseThrow(() -> new NotFoundResourceException(loginRequest.getEmail() + "User 을 찾을 수 없습니다."));
+      Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
+          .orElseThrow(() -> new NotFoundResourceException(loginRequest.getEmail() + "User 을 찾을 수 없습니다."));
 
-    if(!passwordEncoder.matches(loginRequest.getPassword(), findMember.getPassword())){
-      throw new NotMatchPasswordException();
-    }
+      if(!passwordEncoder.matches(loginRequest.getPassword(), findMember.getPassword())){
+        throw new NotMatchPasswordException();
+      }
 
-    String accessToken = jwtProvider.accessToken(TokenInfo.accessTokenInfo(findMember.getId(), property.getAccessExpiredMin()));
-    String refreshToken = jwtProvider.refreshToken(TokenInfo.refreshTokenInfo(property.getRefreshExpiredDay()));
+      String accessToken = jwtProvider.accessToken(TokenInfo.accessTokenInfo(findMember.getId(), property.getAccessExpiredMin()));
+      String refreshToken = jwtProvider.refreshToken(TokenInfo.refreshTokenInfo(property.getRefreshExpiredDay()));
 
-    findMember.setRefreshToken(refreshToken);
-    response.addCookie(CookieFactory.generateRefreshCooke(refreshToken,property.getRefreshExpiredDay()));
+      findMember.setRefreshToken(refreshToken);
+      response.addCookie(CookieFactory.generateRefreshCooke(refreshToken,property.getRefreshExpiredDay()));
 
-    return new Token(accessToken);
+      return new Token(accessToken);
   }
 }

@@ -1,16 +1,17 @@
 package ec.refill.domain.member.api;
 
+import ec.refill.common.config.web.AuthUser;
+import ec.refill.common.config.web.LoginUser;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.member.application.LoginService;
 import ec.refill.domain.member.domain.Token;
+import ec.refill.domain.member.dto.AuthCheckResponse;
 import ec.refill.domain.member.dto.LoginRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,10 +32,8 @@ public class AuthApi {
   }
 
   @GetMapping(" ")
-  public ResponseEntity<?> test(){
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Long memberId = Long.valueOf(auth.getPrincipal().toString());
+  public ResponseEntity<?> authCheck(@LoginUser AuthUser user){
 
-    return JsonResponse.okWithData(HttpStatus.OK, "인증 성공", memberId);
+    return JsonResponse.okWithData(HttpStatus.OK, "인증 성공", new AuthCheckResponse(user.getId()));
   }
 }
