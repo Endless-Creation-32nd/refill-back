@@ -1,6 +1,5 @@
-package ec.refill.common.security;
+package ec.refill.common.config.security;
 
-import ec.refill.domain.member.domain.JwtResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

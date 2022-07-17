@@ -1,4 +1,4 @@
-package ec.refill.common.security;
+package ec.refill.common.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ec.refill.common.exception.AuthenticationFailException;

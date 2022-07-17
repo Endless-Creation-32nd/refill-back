@@ -1,4 +1,4 @@
-package ec.refill.common.security;
+package ec.refill.common.config.security;
 
 import ec.refill.domain.member.domain.JwtResolver;
 import java.io.IOException;
