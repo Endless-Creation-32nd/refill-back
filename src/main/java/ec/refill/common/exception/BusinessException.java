@@ -5,14 +5,10 @@ import lombok.Getter;
 @Getter
 public class BusinessException extends RuntimeException{
 
-  private final ErrorType errorType;
-
-  public BusinessException() {
-    super(ErrorType.INTERNAL_SERVER_ERROR.getErrorMessage());
-    this.errorType = ErrorType.INTERNAL_SERVER_ERROR;
-  }
+  private final ErrorType errorType ;
 
   public BusinessException(ErrorType errorType){
+    super(errorType.getErrorMessage());
     this.errorType = errorType;
   }
 }

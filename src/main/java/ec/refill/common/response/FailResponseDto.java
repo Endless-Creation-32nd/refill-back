@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-class FailResponseDto {
+public class FailResponseDto {
 
   private final int httpStatus;
   private final String errorType;

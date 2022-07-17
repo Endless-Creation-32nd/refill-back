@@ -5,10 +5,10 @@ import ec.refill.common.exception.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DuplicateNicknameException extends BusinessException {
+public class NotMatchPasswordException extends BusinessException {
 
-  public DuplicateNicknameException() {
-    super(ErrorType.DUPLICATED_NICKNAME);
-    log.error("닉네임 중복!");
+  public NotMatchPasswordException() {
+    super(ErrorType.NOT_MATCH_PASSWORD);
+    log.error("password 불일치");
   }
 }
