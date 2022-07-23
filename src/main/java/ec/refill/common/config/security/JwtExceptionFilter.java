@@ -2,6 +2,7 @@ package ec.refill.common.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ec.refill.common.exception.AuthenticationFailException;
+import ec.refill.common.exception.BusinessException;
 import ec.refill.common.exception.ErrorType;
 import ec.refill.common.exception.InvalidInputException;
 import ec.refill.common.response.FailResponseDto;
@@ -27,12 +28,15 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
-    log.info("URL : {}",request.getRequestURI());
-    try{
-      filterChain.doFilter(request,response);
-    }catch (InvalidInputException | AuthenticationFailException e){
+    try {
+      filterChain.doFilter(request, response);
+    } catch (BusinessException e) {
+      log.error(
+          "[Filter Error]" + " status : " + e.getErrorType().getStatusCode() + " Type : "
+              + e.getErrorType().getErrorMessage() +  " Message : " + e.getCustomMessage());
       responseHandle(response, e.getErrorType());
     } catch (Exception e) {
+      log.error("[Filter Error]" + " status: 500" + " Message : " + e.getMessage());
       responseHandle(response, ErrorType.INTERNAL_SERVER_ERROR);
     }
   }
@@ -44,6 +48,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     response.setCharacterEncoding("UTF-8");
     response.setStatus(errorType.getStatusCode().value());
     response.getWriter()
-        .write(objectMapper.writeValueAsString(new FailResponseDto(errorType.getStatusCode(), errorType.getErrorMessage())));
+        .write(objectMapper.writeValueAsString(
+            new FailResponseDto(errorType.getStatusCode(), errorType.getErrorMessage())));
   }
 }

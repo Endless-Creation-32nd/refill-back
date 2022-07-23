@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 @Slf4j
 @RestControllerAdvice
@@ -15,6 +14,8 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(BusinessException.class)
   ResponseEntity<?> handleBusinessException(BusinessException e) {
+    log.error("[Business Error] " + "status : " + e.getErrorType().getStatusCode() + " Type : "
+        + e.getErrorType().getErrorMessage() + " message : " + e.getCustomMessage());
     return JsonResponse.fail(e.getErrorType());
   }
 
@@ -23,7 +24,13 @@ public class GlobalExceptionHandler {
       ConstraintViolationException.class}
   )
   ResponseEntity<?> handleInvalidArgument(Exception e) {
-    log.error("400 - Error");
+    log.error("[Handling Error] "+ "status : 400 " +  "Message : "+ e.getMessage());
+    return JsonResponse.fail(ErrorType.INVALID_INPUT);
+  }
+
+  @ExceptionHandler(Exception.class)
+  ResponseEntity<?> handleUnknownError(Exception e) {
+    log.error("[Unknown Error] "+ "status : 500 " +  "Message : "+ e.getMessage());
     return JsonResponse.fail(ErrorType.INVALID_INPUT);
   }
 }

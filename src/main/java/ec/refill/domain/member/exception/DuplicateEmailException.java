@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DuplicateEmailException extends BusinessException {
 
   public DuplicateEmailException() {
-    super(ErrorType.DUPLICATED_EMAIL);
-    log.error("email 중복!");
+    super(ErrorType.DUPLICATED_EMAIL, "email이 중복됐습니다.");
   }
 }

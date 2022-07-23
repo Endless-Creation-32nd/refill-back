@@ -51,7 +51,7 @@ public class JwtResolver {
     } catch (ExpiredJwtException e) {
       log.error("JWT 만료");
     }
-    throw new AuthenticationFailException();
+    throw new AuthenticationFailException("jwt 인증 실패!");
   }
 
   public boolean validateRefreshToken(String refreshToken){
@@ -71,7 +71,7 @@ public class JwtResolver {
     }catch (ExpiredJwtException e ){
       return e.getClaims().get("memberId").toString();
     } catch (Exception e ){
-      throw new AuthenticationFailException();
+      throw new AuthenticationFailException("jwt 인증 실패!");
     }
   }
 
