@@ -8,25 +8,27 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegisterMemberRequest {
 
   @NotBlank
   @Pattern(regexp = "[가-힣]{2,8}")
-  private final String nickname;
+  private String nickname;
 
   @NotBlank
   @Email
-  private final String email;
+  private String email;
 
   @NotBlank
   @Pattern(regexp = "[a-zA-Z0-9]{8,}")
-  private final String password;
-  
+  private String password;
+
   @HashTagValid
-  private final List<String> tagList;
+  private List<String> tagList;
 
   public Member toEntity(String encoredPassword) {
     return Member.builder()

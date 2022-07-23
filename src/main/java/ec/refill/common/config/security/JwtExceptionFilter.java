@@ -12,11 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtExceptionFilter extends OncePerRequestFilter {
@@ -26,13 +27,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
+    log.info("URL : {}",request.getRequestURI());
     try{
       filterChain.doFilter(request,response);
-    }catch (InvalidInputException e){
+    }catch (InvalidInputException | AuthenticationFailException e){
       responseHandle(response, e.getErrorType());
-    }catch (AuthenticationFailException e){
-      responseHandle(response, e.getErrorType());
-    }catch (Exception e) {
+    } catch (Exception e) {
       responseHandle(response, ErrorType.INTERNAL_SERVER_ERROR);
     }
   }
