@@ -1,6 +1,7 @@
 package ec.refill.domain.group.dto;
 
 import ec.refill.domain.group.domain.Group;
+import ec.refill.domain.group.domain.ParticipationStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,7 @@ public class GroupDetailDto {
         .createdAt(group.getCreatedAt())
         .updatedAt(group.getUpdatedAt())
         .participationMembers(group.getParticipationList().stream()
+            .filter(member -> member.getParticipationStatus().equals(ParticipationStatus.PARTICIPATE))
             .map(member -> new ParticipationMemberDto(member.getMember()))
             .collect(Collectors.toList())
         )

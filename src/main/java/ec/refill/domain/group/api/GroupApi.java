@@ -5,6 +5,7 @@ import ec.refill.common.config.web.LoginMember;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.group.application.CreateGroupService;
 import ec.refill.domain.group.application.GroupQueryService;
+import ec.refill.domain.group.application.ParticipateGroupService;
 import ec.refill.domain.group.dto.CreateGroupRequest;
 import ec.refill.domain.group.dto.GroupDetailDto;
 import ec.refill.domain.group.dto.GroupDto;
@@ -27,6 +28,7 @@ public class GroupApi {
 
   private final CreateGroupService createGroupService;
   private final GroupQueryService groupQueryService;
+  private final ParticipateGroupService participateGroupService;
 
   @PostMapping("")
   public ResponseEntity<?> createGroup(@Valid @RequestBody CreateGroupRequest request,
@@ -52,5 +54,12 @@ public class GroupApi {
   public ResponseEntity<?> getOneGroup(@PathVariable("id") Long groupId){
     GroupDetailDto result = groupQueryService.findOne(groupId);
     return JsonResponse.okWithData(HttpStatus.OK, "그룹 조회 성공", result);
+  }
+
+  @GetMapping("/{id}/participation")
+  public ResponseEntity<?> participateGroup(@PathVariable("id") Long groupId, @LoginMember AuthMember member){
+    participateGroupService.participate(groupId,member.getId());
+
+    return JsonResponse.ok(HttpStatus.OK,"그룹 가입 요청 성공");
   }
 }
