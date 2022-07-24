@@ -15,6 +15,7 @@ import ec.refill.domain.hashtag.dao.HashTagRepository;
 import ec.refill.domain.hashtag.domain.HashTag;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.Member;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,15 +39,12 @@ public class CreateGroupService {
 
     groupRepository.save(group);
 
-    ParticipationId participationId = new ParticipationId(group.getId(), member.getId());
+    participationRepository.findByMemberAndParticipationStatus(member,
+        ParticipationStatus.PARTICIPATE).ifPresent((participation) -> {
+      throw new AlreadyParticipateException("이미 방에 참여중입니다.");
+    });
 
-    participationRepository.findById(participationId)
-        .ifPresent(par -> {
-          if (par.getParticipationStatus().equals(ParticipationStatus.PARTICIPATE)) {
-            throw new AlreadyParticipateException("이미 참여 중입니다.");
-          }
-        });
-    participationRepository.save(new Participation(group,member,ParticipationStatus.PARTICIPATE));
+    participationRepository.save(new Participation(group, member, ParticipationStatus.PARTICIPATE));
 
     for (String tag : request.getTagList()) {
       HashTag hashTag = hashTagRepository.findByHashTag(tag)
