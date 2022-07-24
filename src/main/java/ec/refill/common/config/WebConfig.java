@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     loggingFilter.setIncludeClientInfo(true);
     loggingFilter.setIncludeQueryString(true);
     loggingFilter.setIncludePayload(true);
-    loggingFilter.setIncludeHeaders(true);
+    loggingFilter.setIncludeHeaders(false);
     loggingFilter.setMaxPayloadLength(1024* 1024);
     FilterRegistrationBean bean = new FilterRegistrationBean(loggingFilter);
 //    bean.setOrder(Constants.FILTER_PRIORITY__LOGGING_REUQEST);

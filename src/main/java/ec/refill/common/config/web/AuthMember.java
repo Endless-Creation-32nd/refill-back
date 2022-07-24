@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthUser {
+public class AuthMember {
 
   private Long id;
 
