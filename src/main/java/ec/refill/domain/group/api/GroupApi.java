@@ -36,6 +36,12 @@ public class GroupApi {
     return JsonResponse.ok(HttpStatus.OK, "그룹 생성 성공");
   }
 
+  @GetMapping("")
+  public ResponseEntity<?> getMyGroup(@LoginMember AuthMember member){
+    GroupDetailDto result = groupQueryService.findMyGroup(member.getId());
+    return JsonResponse.okWithData(HttpStatus.OK, "내 그룹 조회 성공", result);
+  }
+
   @GetMapping("/recommendation")
   public ResponseEntity<?> recommendationGroup(){
     List<GroupDto> result = groupQueryService.findRecommendation();
