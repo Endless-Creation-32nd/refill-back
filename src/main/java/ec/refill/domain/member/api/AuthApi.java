@@ -1,7 +1,7 @@
 package ec.refill.domain.member.api;
 
-import ec.refill.common.config.web.AuthUser;
-import ec.refill.common.config.web.LoginUser;
+import ec.refill.common.config.web.AuthMember;
+import ec.refill.common.config.web.LoginMember;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.member.application.LoginService;
 import ec.refill.domain.member.application.LogoutService;
@@ -11,7 +11,6 @@ import ec.refill.domain.member.dto.AuthCheckResponse;
 import ec.refill.domain.member.dto.LoginRequest;
 import ec.refill.domain.member.dto.RefreshAuthRequest;
 import ec.refill.domain.member.exception.NotLoginMemberException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,7 @@ public class AuthApi {
   }
 
   @GetMapping(" ")
-  public ResponseEntity<?> authCheck(@LoginUser AuthUser user) {
+  public ResponseEntity<?> authCheck(@LoginMember AuthMember user) {
 
     return JsonResponse.okWithData(HttpStatus.OK, "인증 성공", new AuthCheckResponse(user.getId()));
   }
@@ -57,7 +56,7 @@ public class AuthApi {
   }
 
   @GetMapping("/logout")
-  public ResponseEntity<?> logout(@LoginUser AuthUser user,  @CookieValue(name = "refresh", required = false) String refreshToken,
+  public ResponseEntity<?> logout(@LoginMember AuthMember user,  @CookieValue(name = "refresh", required = false) String refreshToken,
     HttpServletResponse response
   ) {
     if(refreshToken == null ) throw new NotLoginMemberException();
