@@ -6,6 +6,6 @@ import ec.refill.common.exception.ErrorType;
 public class NotLoginMemberException extends BusinessException {
 
   public NotLoginMemberException() {
-    super(ErrorType.NOT_LOGIN_MEMBER, " 해당 member를 찾을 수 없습니다.");
+    super(ErrorType.NOT_LOGIN_MEMBER, "로그인 안된 유저입니다.");
   }
 }
