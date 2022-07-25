@@ -10,6 +10,7 @@ import ec.refill.domain.member.dto.TokenDto;
 import ec.refill.domain.member.domain.TokenPayload;
 import ec.refill.domain.member.dto.RefreshAuthRequest;
 import ec.refill.domain.member.exception.NotLoginMemberException;
+import ec.refill.domain.member.exception.NotMatchAuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class RefreshAuthService {
     }
 
     if(!findMember.getRefreshToken().equals(refreshToken)){
-      throw new InvalidInputException("로그인 정보가 일치하지 않습니다.");
+      throw new NotMatchAuthException("로그인 정보가 일치하지 않습니다.");
     }
 
     /*

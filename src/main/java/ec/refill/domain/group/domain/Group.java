@@ -1,9 +1,8 @@
 package ec.refill.domain.group.domain;
 
 import ec.refill.common.BaseTimeEntity;
-import ec.refill.common.exception.BusinessException;
-import ec.refill.common.exception.ErrorType;
 import ec.refill.common.exception.NotFoundResourceException;
+import ec.refill.domain.group.exception.LimitedGroupMemberException;
 import ec.refill.domain.member.domain.Member;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class Group extends BaseTimeEntity {
 
   private void validateApprove() {
     if (participationList.size() >= maxMember) {
-      throw new BusinessException(ErrorType.INVALID_INPUT, "제한 인원 초과");
+      throw new LimitedGroupMemberException( "그룹 제한 인원 초과");
     }
   }
 }

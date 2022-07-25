@@ -1,6 +1,7 @@
 package ec.refill.domain.member.domain;
 
-import ec.refill.common.exception.AuthenticationFailException;
+import ec.refill.common.exception.ErrorType;
+import ec.refill.common.exception.JwtAuthenticationException;
 import ec.refill.common.property.JwtProperty;
 import ec.refill.domain.member.vo.TokenInfo;
 import io.jsonwebtoken.Claims;
@@ -48,14 +49,17 @@ public class JwtResolver {
       return true;
     } catch (SecurityException | MalformedJwtException | SignatureException e) {
       log.error("잘못된 JWT 서명");
+      throw new JwtAuthenticationException(ErrorType.INVALID_JWT, "잘못된 JWT 서명");
     } catch (UnsupportedJwtException e) {
       log.error("지원하지 않는 JWT 토큰");
+      throw new JwtAuthenticationException(ErrorType.INVALID_JWT, "지원하지 않는 JWT 토큰");
     } catch (IllegalArgumentException e) {
       log.error("잘못된 토큰 값 ");
+      throw new JwtAuthenticationException(ErrorType.INVALID_JWT, "잘못된 토큰 값.");
     } catch (ExpiredJwtException e) {
       log.error("JWT 만료");
+      throw new JwtAuthenticationException(ErrorType.EXPIRED_JWT, "잘못된 JWT 서명");
     }
-    throw new AuthenticationFailException("jwt 인증 실패!");
   }
 
   public boolean validateRefreshToken(String refreshToken) {
@@ -75,7 +79,7 @@ public class JwtResolver {
     } catch (ExpiredJwtException e) {
       return e.getClaims().get("memberId").toString();
     } catch (Exception e) {
-      throw new AuthenticationFailException("jwt 인증 실패!");
+      throw new JwtAuthenticationException(ErrorType.INVALID_JWT, "잘못된 토큰 값.");
     }
   }
 

@@ -1,5 +1,6 @@
 package ec.refill.common.config.security;
 
+import ec.refill.common.exception.ErrorType;
 import ec.refill.common.exception.InvalidInputException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,6 @@ public class HeaderTokenExtractor {
     if (StringUtils.hasText(bearerHeader) && bearerHeader.startsWith(HEADER_PREFIX)) {
       return bearerHeader.substring(HEADER_PREFIX.length());
     }
-    throw new InvalidInputException("잘못된 Header Token 값 전송");
+    throw new InvalidInputException(ErrorType.INVALID_INPUT_HEADER,"잘못된 Header Token 값 전송");
   }
 }

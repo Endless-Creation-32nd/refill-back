@@ -1,10 +1,13 @@
 package ec.refill.domain.member.application;
 
+import ec.refill.common.exception.BusinessException;
+import ec.refill.common.exception.ErrorType;
 import ec.refill.common.exception.InvalidInputException;
 import ec.refill.common.exception.NotFoundResourceException;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.CookieFactory;
 import ec.refill.domain.member.domain.Member;
+import ec.refill.domain.member.exception.NotMatchAuthException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,7 @@ public class LogoutService {
         .orElseThrow(() -> new NotFoundResourceException("User 을 찾을 수 없습니다."));
 
     if(!findMember.getRefreshToken().equals(refreshToken)){
-      throw new InvalidInputException("로그인 정보가 일치하지 않습니다.");
+      throw new NotMatchAuthException( "로그인 정보가 일치하지 않습니다.");
     }
 
     Cookie removeCooke = CookieFactory.removeCookie();
