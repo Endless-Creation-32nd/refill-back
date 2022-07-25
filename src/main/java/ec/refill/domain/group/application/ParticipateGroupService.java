@@ -11,9 +11,11 @@ import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ParticipateGroupService {
 
   private final ParticipationRepository participationRepository;
