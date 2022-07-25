@@ -30,7 +30,7 @@ public class WritingApi {
   public ResponseEntity<?> getByCategory(
       @Positive @RequestParam(value = "count") int count,
       @PositiveOrZero @RequestParam(value = "page") int page,
-      @NotBlank @RequestParam(value = "category") String category
+      @NotBlank @CategoryValid @RequestParam(value = "category") String category
   ) {
     List<WritingDto> result = writingQueryService.getWriting(count, page,
         WritingCategory.valueOf(category));

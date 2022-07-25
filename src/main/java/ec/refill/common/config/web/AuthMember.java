@@ -8,5 +8,5 @@ import lombok.Getter;
 public class AuthMember {
 
   private Long id;
-
+  private String nickname;
 }

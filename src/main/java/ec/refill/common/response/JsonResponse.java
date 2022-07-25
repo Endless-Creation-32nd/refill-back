@@ -19,8 +19,8 @@ public class JsonResponse {
         .body(responseDto);
   }
 
-  public static ResponseEntity<?> fail(ErrorType errorType){
-    FailResponseDto responseDto = new FailResponseDto(errorType.getStatusCode(), errorType.getErrorMessage());
+  public static ResponseEntity<?> fail(ErrorType errorType, String message){
+    FailResponseDto responseDto = new FailResponseDto(errorType.getStatusCode(), errorType.getErrorType(), message);
     return ResponseEntity.status(errorType.getStatusCode())
         .body(responseDto);
   }

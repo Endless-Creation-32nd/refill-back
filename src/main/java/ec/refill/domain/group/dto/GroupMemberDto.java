@@ -11,19 +11,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GroupMemberDto {
 
-  private List<ParticipationMemberDto> participateRequestList;
-  private List<ParticipationMemberDto> groupParticipationList;
+  private List<ParticipationMemberDto> pendingMembers;
+  private List<ParticipationMemberDto> participateMembers;
 
   public GroupMemberDto(Group group) {
-    this.participateRequestList = group.getParticipationList()
+    this.pendingMembers = group.getParticipationList()
         .stream().filter(participation -> participation.getParticipationStatus()
             .equals(ParticipationStatus.PENDING))
-        .map(participation -> new ParticipationMemberDto(participation.getMember()))
+        .map(ParticipationMemberDto::new)
         .collect(Collectors.toList());
-    this.groupParticipationList = group.getParticipationList()
+    this.participateMembers = group.getParticipationList()
         .stream().filter(participation -> participation.getParticipationStatus()
             .equals(ParticipationStatus.PARTICIPATE))
-        .map(participation -> new ParticipationMemberDto(participation.getMember()))
+        .map(ParticipationMemberDto::new)
         .collect(Collectors.toList());
   }
 }

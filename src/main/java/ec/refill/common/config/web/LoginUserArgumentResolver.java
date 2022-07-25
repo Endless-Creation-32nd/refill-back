@@ -1,5 +1,6 @@
 package ec.refill.common.config.web;
 
+import ec.refill.domain.member.vo.TokenInfo;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +25,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
   public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
       NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Long userId = Long.valueOf(authentication.getPrincipal().toString());
-    return new AuthMember(userId);
+    TokenInfo tokenInfo = (TokenInfo) authentication.getPrincipal();
+    return new AuthMember(tokenInfo.getMemberId(), tokenInfo.getNickname());
   }
 }
