@@ -7,6 +7,7 @@ import ec.refill.domain.member.dto.RegisterMemberRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class MemberApi {
 
   @GetMapping("/check")
   public ResponseEntity<?> checkNicknameAndEmail(
-      @Valid @NotBlank @RequestParam("nickname") String nickname,
+      @Valid @NotBlank @Pattern(regexp = "[가-힣]{2,8}") @RequestParam("nickname") String nickname,
       @Valid @NotBlank @Email @RequestParam("email") String email){
     duplicateCheckService.check(nickname, email);
     return  JsonResponse.ok(HttpStatus.OK, "검증 성공");
