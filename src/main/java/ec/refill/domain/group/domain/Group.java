@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -92,7 +93,14 @@ public class Group extends BaseTimeEntity {
   }
 
   private void validateApprove() {
-    if (participationList.size() >= maxMember) {
+    /*
+    *  현재 참여중인 인원이 maxMember 보다 많으면 에러.
+    */
+    int currentMember = participationList.stream()
+        .filter(participation -> participation.getParticipationStatus()
+            .equals(ParticipationStatus.PARTICIPATE)).toList().size();
+
+    if (currentMember >= maxMember) {
       throw new LimitedGroupMemberException( "그룹 제한 인원 초과");
     }
   }
