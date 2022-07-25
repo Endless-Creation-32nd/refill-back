@@ -37,7 +37,7 @@ public class Participation {
     this.participationStatus = status;
   }
 
-  public boolean approve(){
-    return true;
+  public void participate(){
+    this.participationStatus = ParticipationStatus.PARTICIPATE;
   }
 }

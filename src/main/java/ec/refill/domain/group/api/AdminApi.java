@@ -8,6 +8,7 @@ import ec.refill.domain.group.dto.GroupMemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +28,29 @@ public class AdminApi {
     GroupMemberDto result = adminService.getGroupMembers(groupId, member.getId());
 
     return JsonResponse.okWithData(HttpStatus.OK, "그룹 멤버 조회 성공", result);
+  }
+
+  @GetMapping("/{groupId}/participation/{memberId}")
+  public ResponseEntity<?> approveParticipation(@PathVariable("groupId") Long groupId,
+      @PathVariable("memberId") Long memberId,
+      @LoginMember AuthMember member) {
+    adminService.approve(groupId, member.getId(), memberId);
+    return JsonResponse.ok(HttpStatus.OK, "참여 승인");
+  }
+
+  @DeleteMapping("/{groupId}/participation/{memberId}")
+  public ResponseEntity<?> rejectParticipation(@PathVariable("groupId") Long groupId,
+      @PathVariable("memberId") Long memberId,
+      @LoginMember AuthMember member) {
+    adminService.reject(groupId, member.getId(), memberId);
+    return JsonResponse.ok(HttpStatus.OK, "참여 거절");
+  }
+
+  @DeleteMapping("/{groupId}/member/{memberId}")
+  public ResponseEntity<?> expelParticipation(@PathVariable("groupId") Long groupId,
+      @PathVariable("memberId") Long memberId,
+      @LoginMember AuthMember member) {
+    adminService.expel(groupId, member.getId(), memberId);
+    return JsonResponse.ok(HttpStatus.OK, "참여 거절");
   }
 }
