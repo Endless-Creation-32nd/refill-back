@@ -7,7 +7,6 @@ import ec.refill.domain.group.application.CreateGroupService;
 import ec.refill.domain.group.application.GroupQueryService;
 import ec.refill.domain.group.application.ParticipateGroupService;
 import ec.refill.domain.group.dto.CreateGroupRequest;
-import ec.refill.domain.group.dto.GroupDetailDto;
 import ec.refill.domain.group.dto.GroupDto;
 import java.util.List;
 import javax.validation.Valid;
@@ -40,7 +39,7 @@ public class GroupApi {
 
   @GetMapping("")
   public ResponseEntity<?> getMyGroup(@LoginMember AuthMember member){
-    GroupDetailDto result = groupQueryService.findMyGroup(member.getId());
+    GroupDto result = groupQueryService.findMyGroup(member.getId());
     return JsonResponse.okWithData(HttpStatus.OK, "내 그룹 조회 성공", result);
   }
 
@@ -52,7 +51,7 @@ public class GroupApi {
 
   @GetMapping("/{id}")
   public ResponseEntity<?> getOneGroup(@PathVariable("id") Long groupId){
-    GroupDetailDto result = groupQueryService.findOne(groupId);
+    GroupDto result = groupQueryService.findOne(groupId);
     return JsonResponse.okWithData(HttpStatus.OK, "그룹 조회 성공", result);
   }
 

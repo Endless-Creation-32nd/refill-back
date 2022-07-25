@@ -22,18 +22,15 @@ public class GroupDto {
   private int maxMember;
   private Long adminId;
   private int perWeek;
+
   private LocalDateTime startTime;
   private LocalDateTime endTime;
   private List<String> tagList;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-  private int currentMemberCount;
+  private List<ParticipationMemberDto> participationMembers;
 
-  public static GroupDto toDto(Group group){
-    List<Participation> collect = group.getParticipationList().stream()
-        .filter(participation -> participation.getParticipationStatus()
-            .equals(ParticipationStatus.PARTICIPATE)).toList();
-
+  public static GroupDto toDto(Group group, List<Participation> members) {
     return GroupDto.builder()
         .groupId(group.getId())
         .name(group.getName())
@@ -46,9 +43,12 @@ public class GroupDto {
         .endTime(group.getEndTime())
         .createdAt(group.getCreatedAt())
         .updatedAt(group.getUpdatedAt())
-        .tagList(group.getGroupHashTag().stream().map(groupHashTag -> groupHashTag.getHashTag().getHashTag())
+        .tagList(group.getGroupHashTag().stream()
+            .map(groupHashTag -> groupHashTag.getHashTag().getHashTag())
             .collect(Collectors.toList()))
-        .currentMemberCount(collect.size())
+        .participationMembers(
+            members.stream().map(ParticipationMemberDto::new).collect(Collectors.toList()))
         .build();
   }
+
 }
