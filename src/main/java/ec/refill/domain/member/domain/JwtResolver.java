@@ -58,7 +58,7 @@ public class JwtResolver {
       throw new JwtAuthenticationException(ErrorType.INVALID_JWT, "잘못된 토큰 값.");
     } catch (ExpiredJwtException e) {
       log.error("JWT 만료");
-      throw new JwtAuthenticationException(ErrorType.EXPIRED_JWT, "잘못된 JWT 서명");
+      throw new JwtAuthenticationException(ErrorType.EXPIRED_JWT, "JWT 토큰 만료");
     }
   }
 
