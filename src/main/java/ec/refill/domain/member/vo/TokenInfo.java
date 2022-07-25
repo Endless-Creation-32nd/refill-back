@@ -1,14 +1,11 @@
-package ec.refill.domain.member.dto;
+package ec.refill.domain.member.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class AuthCheckResponse {
-
+public class TokenInfo {
   private Long memberId;
   private String nickname;
 }

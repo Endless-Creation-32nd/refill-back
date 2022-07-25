@@ -1,4 +1,4 @@
-package ec.refill.domain.member.domain;
+package ec.refill.domain.member.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Token {
+public class TokenDto {
   private String accessToken;
 }

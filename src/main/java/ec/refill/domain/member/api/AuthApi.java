@@ -6,7 +6,7 @@ import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.member.application.LoginService;
 import ec.refill.domain.member.application.LogoutService;
 import ec.refill.domain.member.application.RefreshAuthService;
-import ec.refill.domain.member.domain.Token;
+import ec.refill.domain.member.dto.TokenDto;
 import ec.refill.domain.member.dto.AuthCheckResponse;
 import ec.refill.domain.member.dto.LoginRequest;
 import ec.refill.domain.member.dto.RefreshAuthRequest;
@@ -35,14 +35,14 @@ public class AuthApi {
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request,
       HttpServletResponse response) {
-    Token token = loginService.login(request, response);
+    TokenDto token = loginService.login(request, response);
     return JsonResponse.okWithData(HttpStatus.OK, "로그인 성공", token);
   }
 
   @GetMapping(" ")
   public ResponseEntity<?> authCheck(@LoginMember AuthMember user) {
 
-    return JsonResponse.okWithData(HttpStatus.OK, "인증 성공", new AuthCheckResponse(user.getId()));
+    return JsonResponse.okWithData(HttpStatus.OK, "인증 성공", new AuthCheckResponse(user.getId(), user.getNickname()));
   }
 
   @PostMapping("/refresh")
@@ -51,7 +51,7 @@ public class AuthApi {
     if (refreshToken == null) {
       throw new NotLoginMemberException();
     }
-    Token token = refreshAuthService.refresh(refreshAuthRequest, refreshToken);
+    TokenDto token = refreshAuthService.refresh(refreshAuthRequest, refreshToken);
     return JsonResponse.okWithData(HttpStatus.OK, "재인증 성공", token);
   }
 

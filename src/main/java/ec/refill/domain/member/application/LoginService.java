@@ -6,8 +6,8 @@ import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.CookieFactory;
 import ec.refill.domain.member.domain.JwtProvider;
 import ec.refill.domain.member.domain.Member;
-import ec.refill.domain.member.domain.Token;
-import ec.refill.domain.member.domain.TokenInfo;
+import ec.refill.domain.member.dto.TokenDto;
+import ec.refill.domain.member.domain.TokenPayload;
 import ec.refill.domain.member.dto.LoginRequest;
 import ec.refill.domain.member.exception.NotMatchPasswordException;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ public class LoginService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public Token login(LoginRequest loginRequest, HttpServletResponse response){
+  public TokenDto login(LoginRequest loginRequest, HttpServletResponse response){
       Member findMember = memberRepository.findByEmail(loginRequest.getEmail())
           .orElseThrow(() -> new NotFoundResourceException(loginRequest.getEmail() + "User 을 찾을 수 없습니다."));
 
@@ -34,12 +34,12 @@ public class LoginService {
         throw new NotMatchPasswordException();
       }
 
-      String accessToken = jwtProvider.accessToken(TokenInfo.accessTokenInfo(findMember.getId(), property.getAccessExpiredMin()));
-      String refreshToken = jwtProvider.refreshToken(TokenInfo.refreshTokenInfo(property.getRefreshExpiredDay()));
+      String accessToken = jwtProvider.accessToken(TokenPayload.accessTokenPayload(findMember));
+      String refreshToken = jwtProvider.refreshToken();
 
       findMember.setRefreshToken(refreshToken);
       response.addCookie(CookieFactory.generateRefreshCooke(refreshToken,property.getRefreshExpiredDay()));
 
-      return new Token(accessToken);
+      return new TokenDto(accessToken);
   }
 }
