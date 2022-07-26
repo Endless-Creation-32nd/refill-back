@@ -16,30 +16,28 @@ public class JwtProvider {
 
   private final Key accessKey;
   private final Key refreshKey;
-  private final Instant accessTime;
-  private final Instant refreshTime;
 
   public JwtProvider(JwtProperty jwtProperty) {
     byte[] accessKeyBytes = jwtProperty.getAccessKey().getBytes(StandardCharsets.UTF_8);
     byte[] refreshKeyBytes = jwtProperty.getAccessKey().getBytes(StandardCharsets.UTF_8);
-    this.accessTime =  Instant.now().plus(jwtProperty.getAccessExpiredMin(), ChronoUnit.MINUTES);
-    this.refreshTime = Instant.now().plus(jwtProperty.getRefreshExpiredDay(), ChronoUnit.DAYS);
 
     this.accessKey = Keys.hmacShaKeyFor(accessKeyBytes);
     this.refreshKey = Keys.hmacShaKeyFor(refreshKeyBytes);
   }
 
-  public String accessToken(TokenPayload tokenPayload){
+  public String accessToken(TokenPayload tokenPayload, Integer mins){
+    Instant accessExpiredTime = Instant.now().plus(mins, ChronoUnit.MINUTES);
     return Jwts.builder()
         .addClaims(tokenPayload.getPayload())
-        .setExpiration(Date.from(accessTime))
+        .setExpiration(Date.from(accessExpiredTime))
         .signWith(accessKey)
         .compact();
   }
 
-  public String refreshToken(){
+  public String refreshToken(Integer days){
+    Instant refreshExpiredTime = Instant.now().plus(days, ChronoUnit.MINUTES);
     return Jwts.builder()
-        .setExpiration(Date.from(refreshTime))
+        .setExpiration(Date.from(refreshExpiredTime))
         .signWith(refreshKey)
         .compact();
   }

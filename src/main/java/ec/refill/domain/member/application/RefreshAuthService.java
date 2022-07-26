@@ -2,6 +2,7 @@ package ec.refill.domain.member.application;
 
 import ec.refill.common.exception.InvalidInputException;
 import ec.refill.common.exception.NotFoundResourceException;
+import ec.refill.common.property.JwtProperty;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.JwtProvider;
 import ec.refill.domain.member.domain.JwtResolver;
@@ -21,6 +22,7 @@ public class RefreshAuthService {
   private final MemberRepository memberRepository;
   private final JwtResolver resolver;
   private final JwtProvider jwtProvider;
+  private final JwtProperty property;
 
   public TokenDto refresh(RefreshAuthRequest dto, String refreshToken){
     String memberId = resolver.getMemberIdByJwt(dto.getAccessToken());
@@ -39,7 +41,7 @@ public class RefreshAuthService {
     /*
     *  일치하는 경우 JWT 발급
     */
-    String accessToken = jwtProvider.accessToken(TokenPayload.accessTokenPayload(findMember));
+    String accessToken = jwtProvider.accessToken(TokenPayload.accessTokenPayload(findMember), property.getAccessExpiredMin());
 
     return new TokenDto(accessToken);
   }
