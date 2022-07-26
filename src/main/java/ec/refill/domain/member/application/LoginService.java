@@ -34,8 +34,8 @@ public class LoginService {
         throw new NotMatchPasswordException();
       }
 
-      String accessToken = jwtProvider.accessToken(TokenPayload.accessTokenPayload(findMember));
-      String refreshToken = jwtProvider.refreshToken();
+      String accessToken = jwtProvider.accessToken(TokenPayload.accessTokenPayload(findMember),  property.getAccessExpiredMin());
+      String refreshToken = jwtProvider.refreshToken(property.getRefreshExpiredDay());
 
       findMember.setRefreshToken(refreshToken);
       response.addCookie(CookieFactory.generateRefreshCooke(refreshToken,property.getRefreshExpiredDay()));
