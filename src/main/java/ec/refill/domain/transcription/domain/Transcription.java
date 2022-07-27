@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,9 +44,13 @@ public class Transcription extends BaseTimeEntity {
   @OneToMany(mappedBy = "transcription", cascade = CascadeType.ALL)
   private List<Word> wordList = new ArrayList<>();
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  @OneToMany(mappedBy = "transcription")
+  private List<Comment> comment = new ArrayList<>();
+
 
   @Builder
   public Transcription(Long groupId, String title, String author, String original,

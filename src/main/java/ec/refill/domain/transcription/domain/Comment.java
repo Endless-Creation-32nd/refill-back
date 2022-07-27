@@ -1,9 +1,9 @@
 package ec.refill.domain.transcription.domain;
 
-
+import ec.refill.common.BaseTimeEntity;
+import ec.refill.domain.member.domain.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,41 +16,27 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Word {
+public class Comment extends BaseTimeEntity {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "word_id")
+  @Column(name = "comment_id")
   private Long id;
 
-  @Column(nullable = false)
-  private String word;
+  private Long content;
 
-  @Column(nullable = false)
-  private String definition;
+  @ManyToOne
+  @JoinColumn(name = "member_id")
+  private Member member;
 
-  /*
-  *  품사
-  */
-  @Column(nullable = false)
-  private String pos;
-  
-  /*
-  *  전문분야 
-  */
-  @Column(nullable = false)
-  private String cat;
-  
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "trascription_id")
+  @ManyToOne
+  @JoinColumn(name = "transcription_id")
   private Transcription transcription;
 
   @Builder
-  public Word(String word, String definition, String pos, String cat,
+  public Comment(Long content, Member member,
       Transcription transcription) {
-    this.word = word;
-    this.definition = definition;
-    this.pos = pos;
-    this.cat = cat;
+    this.content = content;
+    this.member = member;
     this.transcription = transcription;
   }
 }
