@@ -1,5 +1,6 @@
 package ec.refill.domain.transcription.domain;
 
+import ec.refill.common.BaseTimeEntity;
 import ec.refill.domain.member.domain.Member;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @IdClass(BookMarkId.class)
-public class BookMark {
+public class BookMark extends BaseTimeEntity {
 
   @Id
   @ManyToOne(fetch = FetchType.LAZY)

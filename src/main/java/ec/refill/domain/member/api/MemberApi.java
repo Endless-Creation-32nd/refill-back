@@ -5,11 +5,15 @@ import ec.refill.domain.member.application.DuplicateCheckService;
 import ec.refill.domain.member.application.MemberQueryService;
 import ec.refill.domain.member.application.RegisterMemberService;
 import ec.refill.domain.member.dto.MemberProfileDto;
+import ec.refill.domain.member.dto.ProfileTranscriptionDto;
 import ec.refill.domain.member.dto.RegisterMemberRequest;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +37,7 @@ public class MemberApi {
   private final MemberQueryService memberQueryService;
 
   @PostMapping("")
-  public ResponseEntity<?> register(@RequestBody @Valid RegisterMemberRequest request){
+  public ResponseEntity<?> register(@RequestBody @Valid RegisterMemberRequest request) {
     registerMemberService.register(request);
     return JsonResponse.ok(HttpStatus.CREATED, "회원가입 성공");
   }
@@ -41,14 +45,34 @@ public class MemberApi {
   @GetMapping("/check")
   public ResponseEntity<?> checkNicknameAndEmail(
       @Valid @NotBlank @Pattern(regexp = "[가-힣]{2,8}") @RequestParam("nickname") String nickname,
-      @Valid @NotBlank @Email @RequestParam("email") String email){
+      @Valid @NotBlank @Email @RequestParam("email") String email) {
     duplicateCheckService.check(nickname, email);
-    return  JsonResponse.ok(HttpStatus.OK, "검증 성공");
+    return JsonResponse.ok(HttpStatus.OK, "검증 성공");
   }
 
   @GetMapping("/{memberId}")
-  public ResponseEntity<?> getProfile(@PathVariable("memberId") Long memberId){
+  public ResponseEntity<?> getProfile(@PathVariable("memberId") Long memberId) {
     MemberProfileDto profile = memberQueryService.getProfile(memberId);
-    return  JsonResponse.okWithData(HttpStatus.OK, "프로필 조회 성공", profile);
+    return JsonResponse.okWithData(HttpStatus.OK, "프로필 조회 성공", profile);
+  }
+
+  @GetMapping("/{memberId}/transcription")
+  public ResponseEntity<?> getMemberTranscription(@PathVariable("memberId") Long memberId,
+      @Positive @RequestParam(value = "count") int count,
+      @PositiveOrZero @RequestParam(value = "page") int page
+      ) {
+    List<ProfileTranscriptionDto> result = memberQueryService.getProfileTranscription(
+        memberId, page, count);
+    return JsonResponse.okWithData(HttpStatus.OK, "필사 글 조회 성공", result);
+  }
+
+  @GetMapping("/{memberId}/bookmark")
+  public ResponseEntity<?> getMemberBookMark(@PathVariable("memberId") Long memberId,
+      @Positive @RequestParam(value = "count") int count,
+      @PositiveOrZero @RequestParam(value = "page") int page
+      ) {
+    List<ProfileTranscriptionDto> result = memberQueryService.getProfileBookmark(memberId,
+        page, count);
+    return JsonResponse.okWithData(HttpStatus.OK, "북마크 조회 성공", result);
   }
 }
