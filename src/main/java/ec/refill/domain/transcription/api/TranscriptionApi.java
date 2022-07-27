@@ -3,6 +3,7 @@ package ec.refill.domain.transcription.api;
 import ec.refill.common.config.web.AuthMember;
 import ec.refill.common.config.web.LoginMember;
 import ec.refill.common.response.JsonResponse;
+import ec.refill.domain.transcription.application.AddBookMarkService;
 import ec.refill.domain.transcription.application.AddCommentService;
 import ec.refill.domain.transcription.application.TranscribeService;
 import ec.refill.domain.transcription.application.TranscriptionQueryService;
@@ -27,6 +28,7 @@ public class TranscriptionApi {
 
   private final TranscribeService transcribeService;
   private final AddCommentService addCommentService;
+  private final AddBookMarkService addBookMarkService;
   private final TranscriptionQueryService transcriptionQueryService;
   @PostMapping(value = "")
   public ResponseEntity<?> transcribe(
@@ -43,6 +45,14 @@ public class TranscriptionApi {
       @LoginMember AuthMember member){
     addCommentService.addComment(request, member.getId(), transcriptionId);
     return JsonResponse.ok(HttpStatus.OK, "댓글 등록 성공");
+  }
+
+  @PostMapping("/{transcriptionId}/bookmark")
+  public ResponseEntity<?> addBookMark(
+      @PathVariable("transcriptionId") Long transcriptionId,
+      @LoginMember AuthMember member){
+    addBookMarkService.addBookMark(member.getId(), transcriptionId);
+    return JsonResponse.ok(HttpStatus.OK, "북마크 추가 성공");
   }
 
   @GetMapping("/{transcriptionId}")
