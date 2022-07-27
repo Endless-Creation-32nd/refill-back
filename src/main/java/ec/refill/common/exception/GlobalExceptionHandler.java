@@ -31,6 +31,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   ResponseEntity<?> handleUnknownError(Exception e) {
+    e.printStackTrace();
     log.error("[Unknown Error] "+ "status : 500 " +  "Message : "+ e.getMessage());
     return JsonResponse.fail(ErrorType.INTERNAL_SERVER_ERROR, "서버 에러");
   }
