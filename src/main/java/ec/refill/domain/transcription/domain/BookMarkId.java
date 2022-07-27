@@ -1,4 +1,4 @@
-package ec.refill.domain.bookmark.domain;
+package ec.refill.domain.transcription.domain;
 
 import java.io.Serializable;
 import lombok.AllArgsConstructor;

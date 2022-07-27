@@ -1,7 +1,6 @@
-package ec.refill.domain.bookmark.domain;
+package ec.refill.domain.transcription.domain;
 
 import ec.refill.domain.member.domain.Member;
-import ec.refill.domain.transcription.domain.Transcription;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
