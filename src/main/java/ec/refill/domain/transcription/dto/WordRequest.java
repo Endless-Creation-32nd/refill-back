@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WordRequestDto {
+public class WordRequest {
 
 
   @NotBlank

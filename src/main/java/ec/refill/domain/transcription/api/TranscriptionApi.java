@@ -5,12 +5,15 @@ import ec.refill.common.config.web.LoginMember;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.transcription.application.AddCommentService;
 import ec.refill.domain.transcription.application.TranscribeService;
+import ec.refill.domain.transcription.application.TranscriptionQueryService;
 import ec.refill.domain.transcription.dto.AddCommentRequest;
 import ec.refill.domain.transcription.dto.TranscribeRequest;
+import ec.refill.domain.transcription.dto.TranscriptionDetailDto;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +27,7 @@ public class TranscriptionApi {
 
   private final TranscribeService transcribeService;
   private final AddCommentService addCommentService;
+  private final TranscriptionQueryService transcriptionQueryService;
   @PostMapping(value = "")
   public ResponseEntity<?> transcribe(
       @Valid @RequestBody TranscribeRequest request,
@@ -39,5 +43,11 @@ public class TranscriptionApi {
       @LoginMember AuthMember member){
     addCommentService.addComment(request, member.getId(), transcriptionId);
     return JsonResponse.ok(HttpStatus.OK, "댓글 등록 성공");
+  }
+
+  @GetMapping("/{transcriptionId}")
+  public ResponseEntity<?> getOne(@PathVariable("transcriptionId") Long transcriptionId){
+    TranscriptionDetailDto result = transcriptionQueryService.getDetail(transcriptionId);
+    return JsonResponse.okWithData(HttpStatus.OK,"필사 글 조회 성공", result);
   }
 }

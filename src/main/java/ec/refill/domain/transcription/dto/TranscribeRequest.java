@@ -36,7 +36,7 @@ public class TranscribeRequest {
   private Long groupId;
 
   @Valid
-  private List<WordRequestDto> wordList;
+  private List<WordRequest> wordList;
 
   public Transcription toEntityAndGroup(Member member){
     Transcription transcription = Transcription.builder()
