@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Transcription extends BaseTimeEntity {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "transcripion_id")
+  @Column(name = "transcription_id")
   private Long id;
 
   @Column(name = "group_id")

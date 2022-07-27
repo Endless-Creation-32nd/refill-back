@@ -22,7 +22,8 @@ public class Comment extends BaseTimeEntity {
   @Column(name = "comment_id")
   private Long id;
 
-  private Long content;
+  @Column(nullable = false)
+  private String content;
 
   @ManyToOne
   @JoinColumn(name = "member_id")
@@ -33,7 +34,7 @@ public class Comment extends BaseTimeEntity {
   private Transcription transcription;
 
   @Builder
-  public Comment(Long content, Member member,
+  public Comment(String content, Member member,
       Transcription transcription) {
     this.content = content;
     this.member = member;
