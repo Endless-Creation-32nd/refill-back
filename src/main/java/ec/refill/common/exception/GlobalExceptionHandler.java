@@ -2,6 +2,7 @@ package ec.refill.common.exception;
 
 import ec.refill.common.response.JsonResponse;
 import javax.validation.ConstraintViolationException;
+import javax.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
