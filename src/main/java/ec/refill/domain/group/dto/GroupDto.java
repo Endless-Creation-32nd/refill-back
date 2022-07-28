@@ -47,7 +47,7 @@ public class GroupDto {
             .map(groupHashTag -> groupHashTag.getHashTag().getHashTag())
             .collect(Collectors.toList()))
         .participationMembers(
-            members.stream().map(ParticipationMemberDto::new).collect(Collectors.toList()))
+            members.stream().map(ParticipationMemberDto::toDtoByParticipation).collect(Collectors.toList()))
         .build();
   }
 

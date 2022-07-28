@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -77,6 +78,15 @@ public class Member extends BaseTimeEntity {
       Participation next = iterator.next();
       groupParticipateCheck(next, group);
     }
+  }
+
+  public Participation participatedGroup(){
+    Optional<Participation> findParticipation = participations.stream().filter(
+        participation -> participation.getParticipationStatus()
+            .equals(ParticipationStatus.PARTICIPATE)
+    ).findAny();
+
+    return findParticipation.orElse(null);
   }
 
   private void groupParticipateCheck(Participation participation, Group group) {

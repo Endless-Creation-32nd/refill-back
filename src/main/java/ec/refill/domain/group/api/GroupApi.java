@@ -8,6 +8,7 @@ import ec.refill.domain.group.application.GroupQueryService;
 import ec.refill.domain.group.application.ParticipateGroupService;
 import ec.refill.domain.group.dto.CreateGroupRequest;
 import ec.refill.domain.group.dto.GroupDto;
+import ec.refill.domain.group.dto.GroupTranscriptionDto;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,34 +33,44 @@ public class GroupApi {
 
   @PostMapping("")
   public ResponseEntity<?> createGroup(@Valid @RequestBody CreateGroupRequest request,
-      @LoginMember AuthMember member){
+      @LoginMember AuthMember member) {
     createGroupService.createGroup(request, member.getId());
 
     return JsonResponse.ok(HttpStatus.OK, "그룹 생성 성공");
   }
 
   @GetMapping("")
-  public ResponseEntity<?> getMyGroup(@LoginMember AuthMember member){
+  public ResponseEntity<?> getMyGroup(@LoginMember AuthMember member) {
     GroupDto result = groupQueryService.findMyGroup(member.getId());
     return JsonResponse.okWithData(HttpStatus.OK, "내 그룹 조회 성공", result);
   }
 
   @GetMapping("/recommendation")
-  public ResponseEntity<?> recommendationGroup(){
+  public ResponseEntity<?> recommendationGroup() {
     List<GroupDto> result = groupQueryService.findRecommendation();
     return JsonResponse.okWithData(HttpStatus.OK, "추천 그룹 조회 성공", result);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<?> getOneGroup(@PathVariable("id") Long groupId){
+  public ResponseEntity<?> getOneGroup(@PathVariable("id") Long groupId) {
     GroupDto result = groupQueryService.findOne(groupId);
     return JsonResponse.okWithData(HttpStatus.OK, "그룹 조회 성공", result);
   }
 
   @GetMapping("/{id}/participation")
-  public ResponseEntity<?> participateGroup(@PathVariable("id") Long groupId, @LoginMember AuthMember member){
-    participateGroupService.participate(groupId,member.getId());
+  public ResponseEntity<?> participateGroup(@PathVariable("id") Long groupId,
+      @LoginMember AuthMember member) {
+    participateGroupService.participate(groupId, member.getId());
 
-    return JsonResponse.ok(HttpStatus.OK,"그룹 가입 요청 성공");
+    return JsonResponse.ok(HttpStatus.OK, "그룹 가입 요청 성공");
+  }
+
+  @GetMapping("/{id}/transcription")
+  public ResponseEntity<?> getTranscription(@PathVariable("id") Long groupId,
+      @RequestParam("page") int page, @RequestParam("count") int count) {
+    List<GroupTranscriptionDto> result = groupQueryService.getGroupTranscription(
+        groupId, page, count);
+
+    return JsonResponse.okWithData(HttpStatus.OK, "그룹 필사 조회 성공", result);
   }
 }

@@ -2,6 +2,7 @@ package ec.refill.common.exception;
 
 import ec.refill.common.response.JsonResponse;
 import javax.validation.ConstraintViolationException;
+import javax.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   ResponseEntity<?> handleUnknownError(Exception e) {
+    e.printStackTrace();
     log.error("[Unknown Error] "+ "status : 500 " +  "Message : "+ e.getMessage());
     return JsonResponse.fail(ErrorType.INTERNAL_SERVER_ERROR, "서버 에러");
   }

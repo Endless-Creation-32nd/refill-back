@@ -18,12 +18,12 @@ public class GroupMemberDto {
     this.pendingMembers = group.getParticipationList()
         .stream().filter(participation -> participation.getParticipationStatus()
             .equals(ParticipationStatus.PENDING))
-        .map(ParticipationMemberDto::new)
+        .map(ParticipationMemberDto::toDtoByParticipation)
         .collect(Collectors.toList());
     this.participateMembers = group.getParticipationList()
         .stream().filter(participation -> participation.getParticipationStatus()
             .equals(ParticipationStatus.PARTICIPATE))
-        .map(ParticipationMemberDto::new)
+        .map(ParticipationMemberDto::toDtoByParticipation)
         .collect(Collectors.toList());
   }
 }
