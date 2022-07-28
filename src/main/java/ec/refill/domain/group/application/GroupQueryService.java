@@ -7,12 +7,18 @@ import ec.refill.domain.group.domain.Group;
 import ec.refill.domain.group.domain.Participation;
 import ec.refill.domain.group.domain.ParticipationStatus;
 import ec.refill.domain.group.dto.GroupDto;
+import ec.refill.domain.group.dto.GroupTranscriptionDto;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.Member;
+import ec.refill.domain.transcription.dao.BookMarkRepository;
+import ec.refill.domain.transcription.dao.CommentRepository;
+import ec.refill.domain.transcription.dao.TranscriptionRepository;
+import ec.refill.domain.transcription.domain.Transcription;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +30,9 @@ public class GroupQueryService {
   private final GroupRepository groupRepository;
   private final ParticipationRepository participationRepository;
   private final MemberRepository memberRepository;
+  private final TranscriptionRepository transcriptionRepository;
+  private final CommentRepository commentRepository;
+  private final BookMarkRepository bookMarkRepository;
 
   public GroupDto findOne(Long groupId) {
     Group group = groupRepository.findById(groupId)
@@ -52,6 +61,22 @@ public class GroupQueryService {
     }
     Group myGroup = currentParticipation.get().getGroup();
     return GroupDto.toDto(myGroup, participateMember(myGroup.getParticipationList()));
+  }
+
+  public List<GroupTranscriptionDto> getGroupTranscription(Long groupId,int pageNumber, int count){
+    Group group = groupRepository.findById(groupId)
+        .orElseThrow(() -> new NotFoundResourceException("해당 그룹을 찾을 수 없습니다."));
+    PageRequest pageRequest = PageRequest.of(pageNumber,count);
+
+    List<Transcription> groupTranscriptionList = transcriptionRepository.findByGroupIdOrderByIdDesc(
+        groupId, pageRequest);
+
+    return groupTranscriptionList.stream()
+        .map((transcription) -> {
+          Long bookMarkCount = bookMarkRepository.countByTranscription(transcription);
+          Long commentCount = commentRepository.countByTranscription(transcription);
+          return GroupTranscriptionDto.toDto(transcription, bookMarkCount, commentCount);
+        }).toList();
   }
 
   private List<Participation> participateMember(List<Participation> list) {

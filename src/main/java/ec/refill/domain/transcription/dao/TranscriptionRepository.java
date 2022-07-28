@@ -10,4 +10,5 @@ public interface TranscriptionRepository extends JpaRepository<Transcription, Lo
   Long countByMember(Member member);
 
   List<Transcription> findByMemberOrderByIdDesc(Member member, PageRequest pageRequest);
+  List<Transcription> findByGroupIdOrderByIdDesc(Long groupId, PageRequest pageRequest);
 }
