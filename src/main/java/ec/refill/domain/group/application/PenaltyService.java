@@ -53,7 +53,7 @@ public class PenaltyService {
     Participation currentMember = group.getCurrentMember(participationMember);
 
     PeriodVo period = penaltyRulePolicy.penaltyTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
-    Long lastWeekActivity = transcriptionRepository.countByGroupIdAndCreatedAtBetween(groupId,
+    Long lastWeekActivity = transcriptionRepository.countByMemberAndGroupIdAndCreatedAtBetween(participationMember,groupId,
         period.getStartTime(),
         period.getEndTime());
 

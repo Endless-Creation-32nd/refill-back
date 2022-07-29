@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TranscriptionRepository extends JpaRepository<Transcription, Long> {
   Long countByMember(Member member);
-  Long countByGroupIdAndCreatedAtBetween(Long groupId, LocalDateTime startTime, LocalDateTime endTime);
+  Long countByMemberAndGroupIdAndCreatedAtBetween(Member member,Long groupId, LocalDateTime startTime, LocalDateTime endTime);
   List<Transcription> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
   List<Transcription> findByMemberOrderByIdDesc(Member member, PageRequest pageRequest);
   List<Transcription> findByGroupIdOrderByIdDesc(Long groupId, PageRequest pageRequest);
