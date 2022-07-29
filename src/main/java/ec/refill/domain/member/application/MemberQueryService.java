@@ -1,5 +1,7 @@
 package ec.refill.domain.member.application;
 
+import static java.util.stream.Collectors.reducing;
+
 import ec.refill.common.exception.NotFoundResourceException;
 import ec.refill.domain.group.domain.Participation;
 import ec.refill.domain.member.dao.MemberRepository;
@@ -11,6 +13,7 @@ import ec.refill.domain.transcription.dao.TranscriptionRepository;
 import ec.refill.domain.transcription.domain.BookMark;
 import ec.refill.domain.transcription.domain.Transcription;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -25,12 +28,15 @@ public class MemberQueryService {
   private final BookMarkRepository bookMarkRepository;
   private final TranscriptionRepository transcriptionRepository;
 
+
   public MemberProfileDto getProfile(Long memberId) {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new NotFoundResourceException("해당 멤버를 찾을 수 없습니다."));
     Long bookMarkCount = bookMarkRepository.countByMember(member);
     Long uploadCount = transcriptionRepository.countByMember(member);
-    Long penaltyCount = 0L;
+    Integer penaltyCount = member.getParticipations().stream().map(Participation::getPenalty)
+        .reduce(0, Integer::sum);
+
 
     Participation participation = member.participatedGroup();
     if (participation == null) {

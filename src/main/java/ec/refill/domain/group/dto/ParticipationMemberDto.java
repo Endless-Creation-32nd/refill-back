@@ -3,6 +3,7 @@ package ec.refill.domain.group.dto;
 import ec.refill.domain.group.domain.Participation;
 import ec.refill.domain.group.domain.ParticipationStatus;
 import ec.refill.domain.member.domain.Member;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class ParticipationMemberDto {
   private String nickname;
   private String image;
   private ParticipationStatus status;
+  private Integer penaltyCount;
 
   public static ParticipationMemberDto toDtoByParticipation(Participation participation) {
     return ParticipationMemberDto.builder()
@@ -23,6 +25,7 @@ public class ParticipationMemberDto {
         .nickname(participation.getMember().getNickname())
         .image(participation.getMember().getImage())
         .status(participation.getParticipationStatus())
+        .penaltyCount(participation.getPenalty())
         .build();
   }
 

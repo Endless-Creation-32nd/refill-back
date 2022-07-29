@@ -1,5 +1,6 @@
 package ec.refill.domain.group.domain;
 
+import ec.refill.domain.group.exception.LimitPenaltyException;
 import ec.refill.domain.member.domain.Member;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,13 +32,30 @@ public class Participation {
   @Enumerated(EnumType.STRING)
   private ParticipationStatus participationStatus;
 
+  private Integer penalty;
+
   public Participation(Group group, Member member, ParticipationStatus status) {
     this.group = group;
     this.member = member;
     this.participationStatus = status;
+    this.penalty = 0;
   }
 
   public void participate(){
     this.participationStatus = ParticipationStatus.PARTICIPATE;
+  }
+
+  public void addPenalty(){
+    if(this.penalty >=3){
+      throw new LimitPenaltyException("이미 최대 패널티입니다.");
+    }
+    this.penalty++;
+  }
+
+  public void cancelPenalty(){
+    if(this.penalty == 0){
+      throw new LimitPenaltyException("패널티를 취소할 수 없습니다.");
+    }
+    this.penalty--;
   }
 }
