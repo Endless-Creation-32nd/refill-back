@@ -5,10 +5,12 @@ import ec.refill.domain.group.dao.GroupRepository;
 import ec.refill.domain.group.dao.ParticipationRepository;
 import ec.refill.domain.group.domain.Group;
 import ec.refill.domain.group.domain.Participation;
+import ec.refill.domain.group.domain.ParticipationId;
 import ec.refill.domain.group.domain.ParticipationStatus;
 import ec.refill.domain.group.exception.AlreadyParticipateException;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.Member;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +28,23 @@ public class ParticipateGroupService {
     Member member = memberRepository.findById(memberId)
         .orElseThrow(() -> new NotFoundResourceException(memberId + "해당 유저를 잦을 수 없습니다."));
 
-    participationRepository.findByMemberAndParticipationStatus(member,
-        ParticipationStatus.PARTICIPATE).ifPresent((participation) -> {
-      throw new AlreadyParticipateException("이미 방에 참여중입니다.");
-    });
-
     Group group = groupRepository.findById(groupId)
         .orElseThrow(() -> new NotFoundResourceException("해당 그룹을 찾을 수 없습니다."));
+
+    Optional<Participation> alreadyParticipation = participationRepository.findById(
+        new ParticipationId(groupId, memberId));
+
+    if(alreadyParticipation.isPresent()){
+
+      if(alreadyParticipation.get().getParticipationStatus().equals(ParticipationStatus.PARTICIPATE)){
+        throw new AlreadyParticipateException("이미 방에 참여중입니다.");
+      }
+
+      if(alreadyParticipation.get().getParticipationStatus().equals(ParticipationStatus.PENDING)){
+        throw new AlreadyParticipateException("이미 해당 방에 신청하셨습니다.");
+      }
+
+    }
 
     participationRepository.save(new Participation(group, member, ParticipationStatus.PENDING));
   }

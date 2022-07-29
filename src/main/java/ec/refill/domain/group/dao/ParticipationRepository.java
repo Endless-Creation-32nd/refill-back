@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ParticipationRepository extends JpaRepository<Participation, ParticipationId> {
-  Optional<Participation> findByMemberAndParticipationStatus(Member member, ParticipationStatus status);
   boolean existsByGroupAndMemberAndParticipationStatus(Group group, Member member, ParticipationStatus participationStatus);
+  Optional<Participation> findByMemberAndParticipationStatus(Member m, ParticipationStatus status);
 }
 

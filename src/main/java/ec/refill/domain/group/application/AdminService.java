@@ -6,9 +6,18 @@ import ec.refill.domain.group.dao.GroupRepository;
 import ec.refill.domain.group.dao.ParticipationRepository;
 import ec.refill.domain.group.domain.Group;
 import ec.refill.domain.group.domain.Participation;
-import ec.refill.domain.group.dto.GroupMemberDto;
+import ec.refill.domain.group.domain.ParticipationStatus;
+import ec.refill.domain.group.dto.AdminParticipationResponse;
+import ec.refill.domain.group.dto.ParticipationActivityDto;
+import ec.refill.domain.group.dto.ParticipationMemberDto;
+import ec.refill.domain.group.vo.PeriodVo;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.Member;
+import ec.refill.domain.transcription.dao.TranscriptionRepository;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +29,11 @@ public class AdminService {
   private final MemberRepository memberRepository;
   private final GroupRepository groupRepository;
   private final ParticipationRepository participationRepository;
+  private final TranscriptionRepository transcriptionRepository;
+  private final PenaltyRulePolicy penaltyRulePolicy;
 
   @Transactional(readOnly = true)
-  public GroupMemberDto getGroupMembers(Long groupId, Long memberId){
+  public AdminParticipationResponse getGroupMembers(Long groupId, Long memberId){
     Group group = groupRepository.findById(groupId)
         .orElseThrow(() -> new NotFoundResourceException("해당 그룹을 찾을 수 없습니다."));
 
@@ -30,7 +41,27 @@ public class AdminService {
       throw new AuthorizationFailException("권한이 없습니다.");
     }
 
-    return new GroupMemberDto(group);
+    List<ParticipationMemberDto> pendingMember = group.getParticipationList().stream()
+        .filter(participation -> participation.getParticipationStatus().equals(ParticipationStatus.PENDING))
+        .map(ParticipationMemberDto::toDtoByParticipation).toList();
+    PeriodVo period = penaltyRulePolicy.penaltyTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+
+    List<ParticipationActivityDto> participateMember = group.getParticipationList().stream()
+        .filter(participation -> participation.getParticipationStatus()
+            .equals(ParticipationStatus.PARTICIPATE))
+        .map(participation -> {
+          Member member = participation.getMember();
+          Long lastWeekActivity = transcriptionRepository.countByMemberAndGroupIdAndCreatedAtBetween(
+              member,
+              groupId,
+              period.getStartTime(), period.getEndTime());
+          int remainActivity = Math.toIntExact(group.getPerWeek() - lastWeekActivity);
+          if (remainActivity < 0)
+            remainActivity = 0;
+          return ParticipationActivityDto.toDto(participation, remainActivity);
+        }).toList();
+
+    return new AdminParticipationResponse(pendingMember, participateMember);
   }
 
   @Transactional

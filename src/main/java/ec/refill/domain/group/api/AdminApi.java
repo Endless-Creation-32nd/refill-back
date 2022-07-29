@@ -5,7 +5,7 @@ import ec.refill.common.config.web.LoginMember;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.group.application.AdminService;
 import ec.refill.domain.group.application.PenaltyService;
-import ec.refill.domain.group.dto.GroupMemberDto;
+import ec.refill.domain.group.dto.AdminParticipationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class AdminApi {
   public ResponseEntity<?> getGroupMembers(@PathVariable("groupId") Long groupId,
       @LoginMember AuthMember member) {
 
-    GroupMemberDto result = adminService.getGroupMembers(groupId, member.getId());
+    AdminParticipationResponse result = adminService.getGroupMembers(groupId, member.getId());
 
     return JsonResponse.okWithData(HttpStatus.OK, "그룹 멤버 조회 성공", result);
   }
