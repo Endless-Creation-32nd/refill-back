@@ -56,8 +56,10 @@ public class TranscriptionApi {
   }
 
   @GetMapping("/{transcriptionId}")
-  public ResponseEntity<?> getOne(@PathVariable("transcriptionId") Long transcriptionId){
-    TranscriptionDetailDto result = transcriptionQueryService.getDetail(transcriptionId);
+  public ResponseEntity<?> getOne(@PathVariable("transcriptionId") Long transcriptionId,
+      @LoginMember AuthMember member
+      ){
+    TranscriptionDetailDto result = transcriptionQueryService.getDetail(transcriptionId, member.getId());
     return JsonResponse.okWithData(HttpStatus.OK,"필사 글 조회 성공", result);
   }
 }
