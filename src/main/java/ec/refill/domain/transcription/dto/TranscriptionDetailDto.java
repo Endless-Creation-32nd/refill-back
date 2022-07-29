@@ -18,16 +18,18 @@ public class TranscriptionDetailDto {
   private String author;
   private String original;
   private String image;
+  private Boolean isBookMark;
   private List<WordDto> wordList;
   private List<CommentDto> commentList;
 
-  public static TranscriptionDetailDto toDto(Transcription transcription) {
+  public static TranscriptionDetailDto toDto(Transcription transcription, boolean isBookMark) {
     return TranscriptionDetailDto.builder()
         .transcriptionId(transcription.getId())
         .title(transcription.getTitle())
         .author(transcription.getAuthor())
         .original(transcription.getOriginal())
         .image(transcription.getImage())
+        .isBookMark(isBookMark)
         .wordList(transcription.getWordList().stream().map(WordDto::toDto).toList())
         .commentList(transcription.getComment().stream().map(CommentDto::toDto).toList())
         .build();
