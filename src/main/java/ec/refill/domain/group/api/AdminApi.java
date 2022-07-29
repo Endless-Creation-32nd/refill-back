@@ -67,10 +67,10 @@ public class AdminApi {
   }
 
   @DeleteMapping("/{groupId}/penalty/{memberId}")
-  public ResponseEntity<?> rejectPenalty(@PathVariable("groupId") Long groupId,
+  public ResponseEntity<?> cancelPenalty(@PathVariable("groupId") Long groupId,
       @PathVariable("memberId") Long targetMemberId,
       @LoginMember AuthMember admin) {
-    penaltyService.addPenalty(targetMemberId, admin.getId(), groupId);
+    penaltyService.cancelPenalty(targetMemberId, admin.getId(), groupId);
     return JsonResponse.ok(HttpStatus.OK, "패널티 취소 성공");
   }
 }

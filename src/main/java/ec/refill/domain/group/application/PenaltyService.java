@@ -37,7 +37,7 @@ public class PenaltyService {
         .orElseThrow(() -> new NotFoundResourceException("해당 그룹을 찾을 수 없습니다."));
 
     if (!group.isPenalty()) {
-      throw new NotPenaltyGroupException("패널티를 줄 수 없는 그룹입니다.");
+      throw new NotPenaltyGroupException("패널티그룹이 아닙니다.");
     }
 
     if (!group.getAdminId().equals(adminId)) {
@@ -52,10 +52,6 @@ public class PenaltyService {
         .orElseThrow(() -> new NotFoundResourceException("해당 유저를 찾을 수 없습니다."));
     Participation currentMember = group.getCurrentMember(participationMember);
 
-    if(currentMember.getPenalty() >= 3){
-      throw new LimitPenaltyException("이미 최대 패널티입니다.");
-    }
-
     PeriodVo period = penaltyRulePolicy.penaltyTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
     Long lastWeekActivity = transcriptionRepository.countByGroupIdAndCreatedAtBetween(groupId,
         period.getStartTime(),
@@ -66,5 +62,31 @@ public class PenaltyService {
     }
 
     currentMember.addPenalty();
+  }
+
+  @Transactional
+  public void cancelPenalty(Long targetMemberId, Long adminId, Long groupId) {
+    Member admin = memberRepository.findById(adminId)
+        .orElseThrow(() -> new NotFoundResourceException("해당 유저를 찾을 수 없습니다."));
+    Group group = groupRepository.findById(groupId)
+        .orElseThrow(() -> new NotFoundResourceException("해당 그룹을 찾을 수 없습니다."));
+
+    if (!group.isPenalty()) {
+      throw new NotPenaltyGroupException("패널티그룹이 아닙니다.");
+    }
+
+    if (!group.getAdminId().equals(adminId)) {
+      throw new AuthorizationFailException("권한이 없습니다.");
+    }
+
+    if (groupId.equals(adminId)) {
+      throw new NotAllowAdminRequestException("본인 스스로를 패널티 취소할 수 없습니다.");
+    }
+
+    Member participationMember = memberRepository.findById(targetMemberId)
+        .orElseThrow(() -> new NotFoundResourceException("해당 유저를 찾을 수 없습니다."));
+    Participation currentMember = group.getCurrentMember(participationMember);
+
+    currentMember.cancelPenalty();
   }
 }
