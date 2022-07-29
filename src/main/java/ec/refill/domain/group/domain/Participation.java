@@ -31,13 +31,20 @@ public class Participation {
   @Enumerated(EnumType.STRING)
   private ParticipationStatus participationStatus;
 
+  private Integer penalty;
+
   public Participation(Group group, Member member, ParticipationStatus status) {
     this.group = group;
     this.member = member;
     this.participationStatus = status;
+    this.penalty = 0;
   }
 
   public void participate(){
     this.participationStatus = ParticipationStatus.PARTICIPATE;
+  }
+
+  public void addPenalty(){
+    this.penalty++;
   }
 }
