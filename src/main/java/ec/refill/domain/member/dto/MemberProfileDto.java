@@ -18,11 +18,11 @@ public class MemberProfileDto {
   private String image;
   private Long uploadCount;
   private Long bookMarkCount;
-  private Long penaltyCount;
+  private Integer penaltyCount;
   private String groupName;
 
   public static MemberProfileDto toDto(Member member, Long uploadCount, Long bookMarkCount,
-      Long penaltyCount, String groupName) {
+      Integer penaltyCount, String groupName) {
     return MemberProfileDto.builder()
         .memberId(member.getId())
         .nickname(member.getNickname())
