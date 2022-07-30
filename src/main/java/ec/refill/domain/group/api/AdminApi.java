@@ -2,6 +2,7 @@ package ec.refill.domain.group.api;
 
 import ec.refill.common.config.web.AuthMember;
 import ec.refill.common.config.web.LoginMember;
+import ec.refill.common.exception.ErrorType;
 import ec.refill.common.response.JsonResponse;
 import ec.refill.domain.group.application.AdminService;
 import ec.refill.domain.group.application.PenaltyService;
@@ -37,8 +38,12 @@ public class AdminApi {
   public ResponseEntity<?> approveParticipation(@PathVariable("groupId") Long groupId,
       @PathVariable("memberId") Long memberId,
       @LoginMember AuthMember member) {
-    adminService.approve(groupId, member.getId(), memberId);
-    return JsonResponse.ok(HttpStatus.OK, "참여 승인");
+    boolean result = adminService.approve(groupId, member.getId(), memberId);
+    if(result) {
+      return JsonResponse.ok(HttpStatus.OK, "참여 승인");
+    } else {
+      return JsonResponse.fail(ErrorType.ALREADY_PARTICIPATE_GROUP, "이미 그룹에 참여중입니다");
+    }
   }
 
   @DeleteMapping("/{groupId}/participation/{memberId}")

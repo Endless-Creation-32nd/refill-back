@@ -10,6 +10,7 @@ import ec.refill.domain.group.domain.ParticipationStatus;
 import ec.refill.domain.group.dto.AdminParticipationResponse;
 import ec.refill.domain.group.dto.ParticipationActivityDto;
 import ec.refill.domain.group.dto.ParticipationMemberDto;
+import ec.refill.domain.group.exception.AlreadyParticipateException;
 import ec.refill.domain.group.vo.PeriodVo;
 import ec.refill.domain.member.dao.MemberRepository;
 import ec.refill.domain.member.domain.Member;
@@ -17,7 +18,10 @@ import ec.refill.domain.transcription.dao.TranscriptionRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +69,7 @@ public class AdminService {
   }
 
   @Transactional
-  public void approve(Long groupId, Long adminId, Long requestMemberId){
+  public boolean approve(Long groupId, Long adminId, Long requestMemberId){
     Member requestMember = memberRepository.findById(requestMemberId)
         .orElseThrow(() -> new NotFoundResourceException(requestMemberId + "해당 유저를 잦을 수 없습니다."));
 
@@ -75,9 +79,27 @@ public class AdminService {
     if(!group.getAdminId().equals(adminId)){
       throw new AuthorizationFailException("권한이 없습니다.");
     }
+    /*
+    *  신청 멤버가 있으면 가져옴
+    */
 
-    group.approve(requestMember);
-    groupRepository.save(group);
+    Participation pendingMember = group.getPendingMember(requestMember);
+
+    /*
+    *  신청 멤버가 있는데 다른해당 멤버가 다른 곳에  참여 한 경우
+    */
+    Optional<Participation> alreadyCheck = participationRepository.findByMemberAndParticipationStatus(
+        requestMember,
+        ParticipationStatus.PARTICIPATE);
+
+    if(alreadyCheck.isPresent()){
+      participationRepository.delete(pendingMember);
+      return false;
+    }else {
+      group.approve(requestMember);
+      groupRepository.save(group);
+      return true;
+    }
   }
 
   @Transactional

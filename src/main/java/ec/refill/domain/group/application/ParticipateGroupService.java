@@ -26,25 +26,24 @@ public class ParticipateGroupService {
 
   public void participate(Long groupId, Long memberId) {
     Member member = memberRepository.findById(memberId)
-        .orElseThrow(() -> new NotFoundResourceException(memberId + "해당 유저를 잦을 수 없습니다."));
+        .orElseThrow(() -> new NotFoundResourceException(memberId + "해당 유저를 찾을 수 없습니다."));
 
     Group group = groupRepository.findById(groupId)
         .orElseThrow(() -> new NotFoundResourceException("해당 그룹을 찾을 수 없습니다."));
 
-    Optional<Participation> alreadyParticipation = participationRepository.findById(
-        new ParticipationId(groupId, memberId));
+    /*
+     *  이미 다른 방에 참여중이면 안됨.
+     */
+    participationRepository.findByMemberAndParticipationStatus(member,
+            ParticipationStatus.PARTICIPATE)
+        .ifPresent(entity -> {
+          throw new AlreadyParticipateException("이미 방에 참여중입니다!");
+        });
 
-    if(alreadyParticipation.isPresent()){
-
-      if(alreadyParticipation.get().getParticipationStatus().equals(ParticipationStatus.PARTICIPATE)){
-        throw new AlreadyParticipateException("이미 방에 참여중입니다.");
-      }
-
-      if(alreadyParticipation.get().getParticipationStatus().equals(ParticipationStatus.PENDING)){
-        throw new AlreadyParticipateException("이미 해당 방에 신청하셨습니다.");
-      }
-
-    }
+    participationRepository.findById(new ParticipationId(groupId, memberId))
+        .ifPresent(entity -> {
+          throw new AlreadyParticipateException("해당 방에 이미 참여했습니다.");
+        });
 
     participationRepository.save(new Participation(group, member, ParticipationStatus.PENDING));
   }
